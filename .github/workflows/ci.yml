@@ -17,10 +17,8 @@ jobs:
           run: |
             git rev-parse --abbrev-ref HEAD
             data1=$(git rev-parse --abbrev-ref HEAD)
-            echo "${data2}"
+            echo "${data1}"
             echo '${{ toJSON(github) }}' | jq
-            
-  
   
         - name: Get changed Python files
           run: | 
@@ -53,3 +51,4 @@ jobs:
             else
               echo "No Python test files changed. Skipping tests."
             fi
+
