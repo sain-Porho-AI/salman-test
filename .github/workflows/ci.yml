@@ -41,6 +41,8 @@ jobs:
         - name: Run affected tests
           run: |
               if [ -n "$CHANGED_FILES" ]; then
+                  echo $GITHUB_WORKSPACE
+                  cd $GITHUB_WORKSPACE
                 python -m pytest -v -x "$(echo "$CHANGED_FILES")"
               else
                 echo "No Python test files changed. Skipping tests."
