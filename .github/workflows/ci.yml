@@ -1,0 +1,55 @@
+on:
+    pull_request:
+      types:
+        - opened
+        - synchronize
+        - reopened
+  
+jobs:
+    test:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+        
+        - name: Github file checking out
+          run: |
+            git rev-parse --abbrev-ref HEAD
+            data1=$(git rev-parse --abbrev-ref HEAD)
+            echo "${data2}"
+            echo '${{ toJSON(github) }}' | jq
+            
+  
+  
+        - name: Get changed Python files
+          run: | 
+            git fetch origin
+            BASE_BRANCH=$(git rev-parse origin/main)
+            CHANGED_FILES=$(git diff --name-only $BASE_BRANCH HEAD | grep '^tests/.*\.py$' || true)
+            echo "Changed Python Test Files: $CHANGED_FILES"
+            echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
+            echo "base branch: $BASE_BRANCH"
+  
+        - name: Install Python dependencies
+          uses: actions/setup-python@v2
+          with:
+            python-version: "3.10"
+  
+        - name: Install Package dependencies
+          run: pip install -r requirements.txt
+        
+  
+        - name: Print directory contents
+          run: |
+            ls -R
+  
+        - name: Run affected tests
+          run: |
+            if [ -n "$CHANGED_FILES" ]; then
+              echo $GITHUB_WORKSPACE
+              cd $GITHUB_WORKSPACE
+              python -m pytest -v -x "$(echo "$CHANGED_FILES")"
+            else
+              echo "No Python test files changed. Skipping tests."
+            fi
