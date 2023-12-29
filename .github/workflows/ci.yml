@@ -33,10 +33,11 @@ jobs:
   
       - name: Run affected tests
         run: |
-          if [ -s changed-files.txt ]; then
-            echo $GITHUB_WORKSPACE
-            cd $GITHUB_WORKSPACE
-            python -m pytest -v -x $(cat changed-files.txt)
-          else
-            echo "No Python test files changed. Skipping tests."
-          fi
+            if [ -s changed-files.txt ]; then
+              echo $GITHUB_WORKSPACE
+              cd $GITHUB_WORKSPACE
+              python -m pytest -v -x $(cat changed-files.txt | tr '\n' ' ')
+            else
+              echo "No Python test files changed. Skipping tests."
+            fi
+        
