@@ -1,3 +1,4 @@
+name : running specific test
 on:
   pull_request:
     types:
@@ -45,7 +46,9 @@ jobs:
         run: |
           echo "Running affected tests."
           cd $GITHUB_WORKSPACE
-          python -m pytest -v $CHANGED_FILES
+          # Convert the changed files list to space-separated format
+          CHANGED_FILES_LIST=$(echo $CHANGED_FILES | tr '\n' ' ')
+          python -m pytest -v $CHANGED_FILES_LIST
 
       - name: Run all tests
         if: env.CHANGED_FILES == ''
@@ -53,6 +56,3 @@ jobs:
           echo "Running all tests."
           cd $GITHUB_WORKSPACE
           python -m pytest -v
-
-      
-
