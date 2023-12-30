@@ -46,10 +46,12 @@ jobs:
             echo "Current directory: $(pwd)"
             echo "Files to test: $CHANGED_FILES"
             cd $GITHUB_WORKSPACE
-            IFS=$'\n' GLOBIGNORE='*' command eval 'FILES=($CHANGED_FILES)'
-            python -m pytest -v -x "${FILES[@]}"
+            IFS=$'\n' read -r -a FILES <<< "$CHANGED_FILES"
+            for FILE in "${FILES[@]}"; do
+              python -m pytest -v -x "$FILE"
+            done
           else
             echo "No Python test files changed. Skipping tests."
           fi
-      
+        
 
