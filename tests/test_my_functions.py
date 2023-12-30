@@ -50,4 +50,4 @@ def test_for_add():
     Test function to check the 'add' function with integer inputs.
     """
     result = my_function.add(number_one=1, number_two=6)
-    assert result == 6
+    assert result == 7
