@@ -39,12 +39,14 @@ jobs:
 
       - name: Run affected tests
         run: |
-          if [ -n "$CHANGED_FILES" ]; then
-            echo "Changed files exist. Running tests."
-            echo "Current directory: $(pwd)"
-            echo "Files to test: $CHANGED_FILES"
-            cd $GITHUB_WORKSPACE
-            python -m pytest -v -x $CHANGED_FILES
-          else
-            echo "No Python test files changed. Skipping tests."
-          fi 
+
+         if [ -n "$CHANGED_FILES" ]; then
+         echo "Changed files exist. Running tests."
+         echo "Current directory: $(pwd)"
+         echo "Files to test: $CHANGED_FILES"
+         cd $GITHUB_WORKSPACE
+         IFS=' ' read -r -a FILES <<< "$CHANGED_FILES"
+         python -m pytest -v -x "${FILES[@]}"
+         else
+           echo "No Python test files changed. Skipping tests."
+         fi 
