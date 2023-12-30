@@ -72,3 +72,8 @@ jobs:
           else
             echo "No Python test files changed. Skipping tests."
           fi 
+      - name: Print Debug Information
+        run: |
+            echo "Changed Files: $CHANGED_FILES"
+            echo "Changed Function: $CHANGED_FUNCTION"
+        

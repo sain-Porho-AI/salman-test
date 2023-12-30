@@ -44,3 +44,10 @@ def test_for_divide():
     """
     result = my_function.divide(number_one=10, number_two=5)
     assert result == 2
+
+def test_for_add():
+    """
+    Test function to check the 'add' function with integer inputs.
+    """
+    result = my_function.add(number_one=1, number_two=6)
+    assert result == 6
