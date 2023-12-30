@@ -1,4 +1,5 @@
-name : running specific test
+name: Testing
+
 on:
   pull_request:
     types:
@@ -13,6 +14,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+      
+      - name: Get current branch
+        run: |
+          git rev-parse --abbrev-ref HEAD
+          data1=$(git rev-parse --abbrev-ref HEAD)
+          echo "Current branch: ${data1}"
 
       - name: Get changed Python files
         run: | 
@@ -20,39 +27,30 @@ jobs:
           BASE_BRANCH=$(git rev-parse origin/main)
           CHANGED_FILES=$(git diff --name-only $BASE_BRANCH HEAD | grep '^tests/.*\.py$' || true)
           echo "Changed Python Test Files: $CHANGED_FILES"
-          echo "BASE_BRANCH=$BASE_BRANCH" >> $GITHUB_ENV
-          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-          echo "base branch: $BASE_BRANCH"
-        env:
-          GITHUB_ENV: ${{ runner.workspace }}/.env
+          echo 'CHANGED_FILES<<EOF' >> $GITHUB_ENV
+          echo "$CHANGED_FILES" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
       - name: Install Python dependencies
         uses: actions/setup-python@v2
         with:
           python-version: "3.10"
 
-      - name: Install Python dependencies and pytest
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest
+      - name: Install Package dependencies
+        run: pip install -r requirements.txt
 
       - name: Print directory contents
         run: |
           ls -R
 
       - name: Run affected tests
-        if: env.CHANGED_FILES != ''
         run: |
-          echo "Running affected tests."
-          cd $GITHUB_WORKSPACE
-          # Convert the changed files list to space-separated format
-          CHANGED_FILES_LIST=$(echo $CHANGED_FILES | tr '\n' ' ')
-          python -m pytest -v $CHANGED_FILES_LIST
-
-      - name: Run all tests
-        if: env.CHANGED_FILES == ''
-        run: |
-          echo "Running all tests."
-          cd $GITHUB_WORKSPACE
-          python -m pytest -v
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Running affected tests."
+            cd $GITHUB_WORKSPACE
+            # Convert the changed files list to space-separated format
+            CHANGED_FILES_LIST=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+            python -m pytest -v $CHANGED_FILES_LIST
+          else
+            echo "No Python test files changed. Skipping tests."
+          fi
