@@ -58,14 +58,15 @@ jobs:
               # Run specific functions if available
               if [ -n "$CHANGED_FUNCTIONS" ]; then
                 echo "Running specific functions: $CHANGED_FUNCTIONS"
-                for func in $CHANGED_FUNCTIONS; do
-                  python -m pytest -v $CHANGED_FILES_LIST -k "$func"
-                done
+                python -m pytest -v $CHANGED_FILES_LIST -k "$CHANGED_FUNCTIONS"
               else
-                echo "No specific functions changed. Running all tests in changed files."
+              echo "No specific functions changed. Running all tests in changed files."
                 python -m pytest -v $CHANGED_FILES_LIST
               fi
             else
               echo "No Python test files changed. Skipping tests."
             fi
-        
+      - name: Debug Print
+        run: |
+              echo "Debug: CHANGED_FUNCTIONS=$CHANGED_FUNCTIONS"
+          
