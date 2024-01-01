@@ -51,3 +51,15 @@ def test_for_add():
     """
     result = my_function.add(number_one=1, number_two=6)
     assert result == 7
+def test_for_add():
+    """
+    Test function to check the 'add' function with integer inputs.
+    """
+    result = my_function.add(number_one=1000, number_two=2)
+    assert result == 1002
+def test_for_divide():
+    """
+    Test function to check the 'divide' function with normal division.
+    """
+    result = my_function.divide(number_one=1000, number_two=2)
+    assert result == 500
