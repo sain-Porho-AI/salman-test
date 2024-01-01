@@ -1,3 +1,5 @@
+name: Testing
+
 on:
   pull_request:
     types:
@@ -13,39 +15,65 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
       
-      - name: Get changed Python files
+      - name: Get current branch
+        run: |
+          git rev-parse --abbrev-ref HEAD
+          data1=$(git rev-parse --abbrev-ref HEAD)
+          echo "Current branch: ${data1}"
+
+      - name: Get changed Python files and function
         run: | 
           git fetch origin
           BASE_BRANCH=$(git rev-parse origin/main)
           CHANGED_FILES=$(git diff --name-only $BASE_BRANCH HEAD | grep '^tests/.*\.py$' || true)
           echo "Changed Python Test Files: $CHANGED_FILES"
-          echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-          echo "base branch: $BASE_BRANCH"
+          echo 'CHANGED_FILES<<EOF' >> $GITHUB_ENV
+          echo "$CHANGED_FILES" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
 
-      - name: Install Python dependencies
+          # Extract changed function name
+          CHANGED_FUNCTION=$(git diff -U0 $BASE_BRANCH HEAD $CHANGED_FILES | grep -E '^\+' | grep -E 'def ' | sed -E 's/^\+.*def ([a-zA-Z_][a-zA-Z0-9_]*)\(.*/\1/' | tail -n 1 || true)
+          echo "Changed Function: $CHANGED_FUNCTION"
+          echo 'CHANGED_FUNCTION<<EOF' >> $GITHUB_ENV
+          echo "$CHANGED_FUNCTION" >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.10"
 
-      - name: Install Python dependencies and pytest
+      - name: Install dependencies
         run: |
-            python -m pip install --upgrade pip
-            pip install -r requirements.txt
-            pip install pytest
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
 
       - name: Print directory contents
         run: |
           ls -R
+
       - name: Run affected tests
         run: |
           if [ -n "$CHANGED_FILES" ]; then
-            echo "Changed files exist. Running tests."
-            echo "Current directory: $(pwd)"
-            echo "Files to test: $CHANGED_FILES"
+            echo "Running affected tests."
             cd $GITHUB_WORKSPACE
-            IFS=$'\n' read -r -a FILES <<< "$CHANGED_FILES"
-            python -m pytest -v -x "${FILES[@]}"
+            # Convert the changed files list to space-separated format
+            CHANGED_FILES_LIST=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+
+            # Run specific function if available
+            if [ -n "$CHANGED_FUNCTION" ]; then
+              echo "Running specific function: $CHANGED_FUNCTION"
+              python -m pytest -v $CHANGED_FILES_LIST -k "$CHANGED_FUNCTION"
+            else
+              echo "No specific function changed. Running all tests in changed files."
+              python -m pytest -v $CHANGED_FILES_LIST
+            fi
           else
             echo "No Python test files changed. Skipping tests."
-          fi
-
+          fi 
+      - name: Print Debug Information
+        run: |
+            echo "Changed Files: $CHANGED_FILES"
+            echo "Changed Function: $CHANGED_FUNCTION"
+        
