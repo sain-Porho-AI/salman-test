@@ -45,3 +45,19 @@ def test_add():
     """
     result = my_function.add(number_one=1, number_two=9)
     assert result == 10
+
+
+def test_divide():
+    """
+    Test function to check the 'divide' function with normal division.
+    """
+    result = my_function.divide(number_one=12, number_two=2)
+    assert result == 6
+
+
+def test_add():
+    """
+    Test function to check the 'add' function with integer inputs.
+    """
+    result = my_function.add(number_one=12, number_two=8)
+    assert result == 20
