@@ -20,3 +20,11 @@ def test_divide():
     """
     result = my_function.divide(number_one=1, number_two=1)
     assert result == 1
+
+
+def test_add():
+    """
+    Test function to check the 'add' function with integer inputs.
+    """
+    result = my_function.add(number_one=2, number_two=3)
+    assert result == 5
