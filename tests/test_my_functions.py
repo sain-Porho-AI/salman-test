@@ -49,9 +49,35 @@ def test_for_add():
     """
     result = my_function.add(number_one=16, number_two=2)
     assert result == 18
+
+
 def test_for_divide():
     """
     Test function to check the 'divide' function with normal division.
     """
     result = my_function.divide(number_one=4, number_two=2)
     assert result == 2
+
+
+def test_add1():
+    """
+    Test function to check the 'add' function with integer inputs.
+    """
+    result = my_function.add(number_one=2, number_two=4)
+    assert result == 6
+
+
+def test_add2():
+    """
+    Test function to check the 'add' function with integer inputs.
+    """
+    result = my_function.add(number_one=3, number_two=4)
+    assert result == 7
+
+
+def test_for_divide1():
+    """
+    Test function to check the 'divide' function with normal division.
+    """
+    result = my_function.divide(number_one=6, number_two=2)
+    assert result == 3
