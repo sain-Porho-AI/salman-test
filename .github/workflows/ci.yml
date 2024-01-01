@@ -49,22 +49,23 @@ jobs:
 
       - name: Run affected tests
         run: |
-          if [ -n "$CHANGED_FILES" ]; then
-            echo "Running affected tests."
-            cd $GITHUB_WORKSPACE
-            # Convert the changed files list to space-separated format
-            CHANGED_FILES_LIST=$(echo "$CHANGED_FILES" | tr '\n' ' ')
-
-            # Run specific functions if available
-            if [ -n "$CHANGED_FUNCTIONS" ]; then
-              echo "Running specific functions: $CHANGED_FUNCTIONS"
-              for func in $CHANGED_FUNCTIONS; do
-                python -m pytest -v $CHANGED_FILES_LIST -k "$func"
-              done
+            if [ -n "$CHANGED_FILES" ]; then
+              echo "Running affected tests."
+              cd $GITHUB_WORKSPACE
+              # Convert the changed files list to space-separated format
+              CHANGED_FILES_LIST=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+        
+              # Run specific functions if available
+              if [ -n "$CHANGED_FUNCTIONS" ]; then
+                echo "Running specific functions: $CHANGED_FUNCTIONS"
+                for func in $CHANGED_FUNCTIONS; do
+                  python -m pytest -v $CHANGED_FILES_LIST -k "$func"
+                done
+              else
+                echo "No specific functions changed. Running all tests in changed files."
+                python -m pytest -v $CHANGED_FILES_LIST
+              fi
             else
-              echo "No specific functions changed. Running all tests in changed files."
-              python -m pytest -v $CHANGED_FILES_LIST
+              echo "No Python test files changed. Skipping tests."
             fi
-          else
-            echo "No Python test files changed. Skipping tests."
-          fi 
+        
