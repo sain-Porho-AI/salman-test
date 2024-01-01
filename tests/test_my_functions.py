@@ -71,13 +71,13 @@ def test_add2():
     """
     Test function to check the 'add' function with integer inputs.
     """
-    result = my_function.add(number_one=4, number_two=4)
-    assert result == 8
+    result = my_function.add(number_one=6, number_two=4)
+    assert result == 10
 
 
 def test_for_divide1():
     """
     Test function to check the 'divide' function with normal division.
     """
-    result = my_function.divide(number_one=3, number_two=3)
-    assert result == 1
+    result = my_function.divide(number_one=100, number_two=20)
+    assert result == 5
