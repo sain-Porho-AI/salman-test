@@ -23,6 +23,7 @@ def my_rectangle():
 def your_rectangle():
     return shapes.Rectangle(length=5, width=6)
 
+
 @pytest.fixture
 def not_equal_rectangle():
     return your_rectangle != my_rectangle

@@ -23,6 +23,8 @@ def test_for_divide3():
     """
     result = my_function.divide(number_one=20, number_two=2)
     assert result == 10
+
+
 def test_for_divide4():
     """
     Test function to check the 'divide' function with normal division.
