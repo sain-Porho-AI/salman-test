@@ -70,12 +70,6 @@ def test_for_divide1():
     assert result == 1
 
 
-
-
-
-
-
-
 def test_for_divide10():
     """
     Test function to check the 'divide' function with normal division.
