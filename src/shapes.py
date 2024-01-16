@@ -17,7 +17,7 @@ class Circle(Shape):
         return math.pi * self.radius ** 2
 
     def perimeter(self):
-        return 2  * math.pi * self.radius
+        return 2 * math.pi * self.radius
 
 
 class Rectangle(Shape):
@@ -27,14 +27,13 @@ class Rectangle(Shape):
         self.width = width
 
     def __eq__(self, other):
-        if not isinstance(other , Rectangle):
+        if not isinstance(other, Rectangle):
             return False
         return self.width == other.width and self.length == other.length
 
-
     def area(self):
         return self.length * self.width
-    
+
     def perimeter(self):
         return (self.length * 2) + (self.width * 2)
 
@@ -42,4 +41,3 @@ class Rectangle(Shape):
 class Square(Rectangle):
     def __init__(self, side_length):
         super().__init__(side_length, side_length)
-        
